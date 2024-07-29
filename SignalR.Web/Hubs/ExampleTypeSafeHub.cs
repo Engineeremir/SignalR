@@ -32,5 +32,9 @@ namespace SignalR.Web.Hubs
         {
             await Clients.Others.ReceiveMessageForOtherClients(message);
         }
+        public async Task BroadCastMessageToSpesificClient(string message,string connectionId)
+        {
+            await Clients.Client(connectionId).ReceiveMessageForSpesificClient(message);
+        }
     }
 }
