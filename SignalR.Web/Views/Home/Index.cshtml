@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@section Scripts
+{
+    <script src="~/js/signalr-client.js"></script>
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <button type="button" class="btn btn-primary">
+                Connected Client Counts <span id="span-connected-client-count" class="badge badge-light">4</span>
+            </button>
+            <button id="btn-send-message-all-client">Send to all clients</button>
+            <button id="btn-send-message-caller-client">Send to caller client</button>
+            <button id="btn-send-message-other-client">Send to other client</button>
+        </div>
+    </div>
+</div>
