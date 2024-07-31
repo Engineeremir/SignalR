@@ -1,5 +1,25 @@
 ﻿$(document).ready(function () {
     const connection = new signalR.HubConnectionBuilder().withUrl("/exampletypesafehub").configureLogging(signalR.LogLevel.Information).build();
+    async function start() {
+
+        try {
+            await connection.start().then(() => {
+                console.log("connection established with hub");
+                $("#div_connectionId").html(`Connection Id : ${connection.connectionId}`);
+
+            });
+        } catch (error) {
+            console.error("error occured when establishing connection with hub", error)
+            setTimeout(() => start(), 5000)
+        }
+
+    }
+
+    connection.onclose(async () => {
+        await start();
+    })
+
+    start();
 
     const broadCastMessageToAllClientsMethodCall = "BroadCastMessageToAllClients";
     const receiveMessageForAllClientsClientMethodCall = "ReceiveMessageForAllClients";
@@ -87,19 +107,6 @@
         console.log("message", message)
     })
 
-    function start() {
-        connection.start().then(() => {
-            console.log("connection established with hub");
-            $("#div_connectionId").html(`Connection Id : ${connection.connectionId}`);
-
-        }); 
-    }
-
-    try {
-        start();
-    } catch {
-        setTimeout(()=>start(),5000)
-    }
 
     connection.on(receiveMessageForAllClientsClientMethodCall, (message) => {
         console.log("message", message)

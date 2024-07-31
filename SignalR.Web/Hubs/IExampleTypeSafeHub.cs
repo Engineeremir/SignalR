@@ -13,5 +13,6 @@ namespace SignalR.Web.Hubs
         Task AddGroup(string groupName);
         Task RemoveGroup(string groupName);
         Task ReceiveMessageForTypedClients(Product product);
+        Task ReceiveMessageAsStreamForAllClients(string name);
     }
 }
