@@ -1,4 +1,6 @@
-﻿namespace SignalR.Web.Hubs
+﻿using SignalR.Web.Models;
+
+namespace SignalR.Web.Hubs
 {
     public interface IExampleTypeSafeHub
     {
@@ -10,5 +12,6 @@
         Task ReceiveMessageForGroupedClients(string message);
         Task AddGroup(string groupName);
         Task RemoveGroup(string groupName);
+        Task ReceiveMessageForTypedClients(Product product);
     }
 }

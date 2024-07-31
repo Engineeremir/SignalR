@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using SignalR.Web.Models;
 
 namespace SignalR.Web.Hubs
 {
@@ -38,6 +39,10 @@ namespace SignalR.Web.Hubs
         public async Task BroadCastMessageToGroupedClients(string groupName,string message)
         {
             await Clients.Group(groupName).ReceiveMessageForGroupedClients(message);
+        }
+        public async Task BroadCastMessageToTypedClients(Product product)
+        {
+            await Clients.All.ReceiveMessageForTypedClients(product);
         }
         public async Task AddGroup(string groupName)
         {

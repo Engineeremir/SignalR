@@ -16,6 +16,8 @@
     const broadCastMessageToGroupedClientsMethodCall = "BroadCastMessageToGroupedClients";
     const receiveMessageForGrupedClientsMethodCall = "ReceiveMessageForGroupedClients";
 
+    const broadCastMessageToAllTypedClientsMethodCall = "BroadCastMessageToTypedClients";
+    const receiveMessageForAllTypedClientsClientMethodCall = "ReceiveMessageForTypedClients";
 
     const receiveConnectedClientCountMethodCall = "ReceiveConnectedClientCount";
     
@@ -115,6 +117,10 @@
         console.log("message", message)
     })
 
+    connection.on(receiveMessageForAllTypedClientsClientMethodCall, (message) => {
+        console.log("message", message)
+    })
+
 
     var span_client_count = $("#span-connected-client-count");
     connection.on(receiveConnectedClientCountMethodCall, (count) => {
@@ -148,4 +154,12 @@
 
         connection.invoke(broadCastMessageToSpesificClientMethodCall, message, connectionId).catch(err => console.error("error", err));
     })
+
+    $("#btn-send-message-to-complexed-type").click(function () {
+        const product = {id:1,name:"Product1",price:100}
+
+        connection.invoke(broadCastMessageToAllTypedClientsMethodCall, product).catch(err => console.error("error", err));
+    })
+
+    
 })
