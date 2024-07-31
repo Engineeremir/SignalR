@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using System;
 
 namespace SignalR.Web.Hubs
 {
@@ -35,6 +34,22 @@ namespace SignalR.Web.Hubs
         public async Task BroadCastMessageToSpesificClient(string message,string connectionId)
         {
             await Clients.Client(connectionId).ReceiveMessageForSpesificClient(message);
+        }
+        public async Task BroadCastMessageToGroupedClients(string groupName,string message)
+        {
+            await Clients.Group(groupName).ReceiveMessageForGroupedClients(message);
+        }
+        public async Task AddGroup(string groupName)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            await Clients.Caller.ReceiveMessageForCallerClient($"You have been joined to the group {groupName}");
+            await Clients.Others.ReceiveMessageForOtherClients($"User {Context.ConnectionId} joined to the group");
+        }
+        public async Task RemoveGroup(string groupName)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+            await Clients.Caller.ReceiveMessageForCallerClient($"You have been exited from the group {groupName}");
+            await Clients.Others.ReceiveMessageForOtherClients($"User {Context.ConnectionId} exited from the group");
         }
     }
 }

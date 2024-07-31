@@ -1,4 +1,6 @@
 ﻿$(document).ready(function () {
+    const connection = new signalR.HubConnectionBuilder().withUrl("/exampletypesafehub").configureLogging(signalR.LogLevel.Information).build();
+
     const broadCastMessageToAllClientsMethodCall = "BroadCastMessageToAllClients";
     const receiveMessageForAllClientsClientMethodCall = "ReceiveMessageForAllClients";
 
@@ -11,10 +13,77 @@
     const broadCastMessageToSpesificClientMethodCall = "BroadCastMessageToSpesificClient";
     const receiveMessageForSepesificClientMethodCall = "ReceiveMessageForSpesificClient";
 
+    const broadCastMessageToGroupedClientsMethodCall = "BroadCastMessageToGroupedClients";
+    const receiveMessageForGrupedClientsMethodCall = "ReceiveMessageForGroupedClients";
+
 
     const receiveConnectedClientCountMethodCall = "ReceiveConnectedClientCount";
     
-    const connection = new signalR.HubConnectionBuilder().withUrl("/exampletypesafehub").configureLogging(signalR.LogLevel.Information).build();
+    
+    const groupA = "GroupA";
+    const groupB = "GroupB";
+    let currentGroupList = [];
+
+    function refreshGroupList() {
+        $("#groupList").empty();
+        currentGroupList.forEach(x =>{
+            $("#groupList").append(`<p>${x}</p>`)
+        })
+    }
+
+    $("#btn-add-to-group-A").click(function () {
+
+        if (currentGroupList.includes(groupA)) return;
+
+        connection.invoke("AddGroup", groupA).then(() => {
+            currentGroupList.push(groupA);
+            refreshGroupList();
+        })
+    })
+
+    $("#btn-exit-from-group-A").click(function () {
+        if (!currentGroupList.includes(groupA)) return;
+        connection.invoke("RemoveGroup", groupA).then(() => {
+            currentGroupList = currentGroupList.filter(x => x !== groupA);
+            refreshGroupList();
+        })
+    })
+
+    $("#btn-add-to-group-B").click(function () {
+        if (currentGroupList.includes(groupB)) return;
+        connection.invoke("AddGroup", groupB).then(() => {
+            currentGroupList.push(groupB);
+            refreshGroupList();
+        })
+    })
+
+    $("#btn-exit-from-group-B").click(function () {
+        if (!currentGroupList.includes(groupB)) return;
+        connection.invoke("RemoveGroup", groupB).then(() => {
+            currentGroupList = currentGroupList.filter(x => x !== groupB);
+            refreshGroupList();
+        })
+    })
+
+    $("#btn-send-message-to-group-A").click(function () {
+        const message = "Message for group A";
+
+        connection.invoke(broadCastMessageToGroupedClientsMethodCall, groupA, message).catch(err => console.error("error", err));
+    })
+
+    connection.on(receiveMessageForGrupedClientsMethodCall, (message) => {
+        console.log("message", message)
+    })
+
+    $("#btn-send-message-to-group-B").click(function () {
+        const message = "Message for group B";
+
+        connection.invoke(broadCastMessageToGroupedClientsMethodCall, groupB, message).catch(err => console.error("error", err));
+    })
+
+    connection.on(receiveMessageForGrupedClientsMethodCall, (message) => {
+        console.log("message", message)
+    })
 
     function start() {
         connection.start().then(() => {

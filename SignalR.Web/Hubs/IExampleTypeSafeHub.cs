@@ -7,5 +7,8 @@
         Task ReceiveMessageForCallerClient(string message);
         Task ReceiveMessageForOtherClients(string message);
         Task ReceiveMessageForSpesificClient(string message);
+        Task ReceiveMessageForGroupedClients(string message);
+        Task AddGroup(string groupName);
+        Task RemoveGroup(string groupName);
     }
 }
