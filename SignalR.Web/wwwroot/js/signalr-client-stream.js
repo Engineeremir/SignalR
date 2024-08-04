@@ -8,6 +8,7 @@
     const broadCastProductStreamDataToAllClientMethodCall = "BroadCastProductStreamDataToAllClient";
     const receiveProductsAsStreamForAllClientsClientMethodCall = "ReceiveProductsAsStreamForAllClients";
 
+    const broadCastFromHubToClientMethodCall = "BroadCastFromHubToClient";
     async function start() {
 
         try {
@@ -53,14 +54,14 @@
     $("#btn_from_client_to_hub2").click(function () {
 
         const productList = [
-            { id: 1, name: "product1",price: 100 },
-            { id: 2, name: "product2",price: 200 },
-            { id: 3, name: "product3",price: 300 },
-            { id: 4, name: "product4",price: 400 },
-            { id: 5, name: "product5",price: 500 },
-            { id: 6, name: "product6",price: 600 }
+            { id: 1, name: "product1", price: 100 },
+            { id: 2, name: "product2", price: 200 },
+            { id: 3, name: "product3", price: 300 },
+            { id: 4, name: "product4", price: 400 },
+            { id: 5, name: "product5", price: 500 },
+            { id: 6, name: "product6", price: 600 }
         ]
-        
+
 
         const subject = new signalR.Subject();
 
@@ -77,6 +78,12 @@
         $("#stream_box").append(`<p>${product.id}-${product.name}-${product.price}</p>`)
     })
 
-
+    $("#btn_from_hub_to_client").click(function () {
+        connection.stream(broadCastFromHubToClientMethodCall, 5).subscribe(
+            {
+                next: (message) => $("#stream_box").append(`<p>${message}</p>`)
+            });
+    })
+    
 
 });

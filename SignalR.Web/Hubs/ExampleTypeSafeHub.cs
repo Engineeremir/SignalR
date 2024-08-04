@@ -65,6 +65,15 @@ namespace SignalR.Web.Hubs
 
         }
 
+        public async IAsyncEnumerable<string> BroadCastFromHubToClient(int count)
+        {
+            foreach (var item in Enumerable.Range(1,count).ToList())
+            {
+                await Task.Delay(500);
+                yield return $"{item}. data";
+            }
+        }
+
         public async Task AddGroup(string groupName)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
