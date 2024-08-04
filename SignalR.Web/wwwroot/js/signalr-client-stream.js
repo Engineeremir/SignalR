@@ -4,6 +4,10 @@
     const broadCastStreamDataToAllClientsMethodCall = "BroadCastStreamDataToAllClient";
     const receiveMessageAsStreamForAllClientsClientMethodCall = "ReceiveMessageAsStreamForAllClients";
 
+
+    const broadCastProductStreamDataToAllClientMethodCall = "BroadCastProductStreamDataToAllClient";
+    const receiveProductsAsStreamForAllClientsClientMethodCall = "ReceiveProductsAsStreamForAllClients";
+
     async function start() {
 
         try {
@@ -16,7 +20,7 @@
             console.error("error occured when establishing connection with hub", error)
             setTimeout(() => start(), 5000)
         }
-        
+
     }
 
     connection.onclose(async () => {
@@ -44,7 +48,35 @@
     connection.on(receiveMessageAsStreamForAllClientsClientMethodCall, (message) => {
         $("#stream_box").append(`<p>${message}</p>`)
     })
-    
+
+
+    $("#btn_from_client_to_hub2").click(function () {
+
+        const productList = [
+            { id: 1, name: "product1",price: 100 },
+            { id: 2, name: "product2",price: 200 },
+            { id: 3, name: "product3",price: 300 },
+            { id: 4, name: "product4",price: 400 },
+            { id: 5, name: "product5",price: 500 },
+            { id: 6, name: "product6",price: 600 }
+        ]
+        
+
+        const subject = new signalR.Subject();
+
+        connection.send(broadCastProductStreamDataToAllClientMethodCall, subject).catch(err => console.error(err));
+
+        productList.forEach(product => {
+            subject.next(product);
+        });
+
+        subject.complete();
+    })
+
+    connection.on(receiveProductsAsStreamForAllClientsClientMethodCall, (product) => {
+        $("#stream_box").append(`<p>${product.id}-${product.name}-${product.price}</p>`)
+    })
+
 
 
 });

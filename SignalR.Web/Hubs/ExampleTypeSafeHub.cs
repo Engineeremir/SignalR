@@ -55,6 +55,16 @@ namespace SignalR.Web.Hubs
 
         }
 
+        public async Task BroadCastProductStreamDataToAllClient(IAsyncEnumerable<Product> products)
+        {
+            await foreach (var product in products)
+            {
+                await Task.Delay(500);
+                await Clients.All.ReceiveProductsAsStreamForAllClients(product);
+            }
+
+        }
+
         public async Task AddGroup(string groupName)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
