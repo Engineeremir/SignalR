@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewData["Title"] = "HubContext";
+}
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            const connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7064/myhub").configureLogging(signalR.LogLevel.Information).build();
+
+            async function start() {
+
+                try {
+                    await connection.start().then(() => {
+                        console.log("connection established with hub");
+                        $("#div_connectionId").html(`Connection Id : ${connection.connectionId}`);
+
+                    });
+                } catch (error) {
+                    console.error("error occured when establishing connection with hub", error)
+                    setTimeout(() => start(), 5000)
+                }
+
+            }
+
+            connection.onclose(async () => {
+                await start();
+            })
+
+            connection.on("ReceiveMessageForAllClients", (message) => {
+                console.log("Message from API",message)
+            })
+            start();
+
+        })
+    </script>
+}
+<h1>HubContext</h1>
+
